@@ -1,0 +1,15 @@
+{
+        "status": "Beta",
+        "thumbnailUrl": "https://avatars1.githubusercontent.com/u/6362924?v=2&s=200",
+        "bornAt": "LocalGov Digital",
+        "geography": "UK",
+        "politicalEntity":"",
+        "type":"Web App",
+        "needs": [
+                {"need": "Web Developer"},
+        ],
+        "categories": [
+                {"category": "Local Government"},
+                {"category": "Digital"}
+        ]
+}
