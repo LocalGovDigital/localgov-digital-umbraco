@@ -1,0 +1,19 @@
+@*
+    Sample home layout template. Your home layout does NOT have to inherit from uBlogsyBaseSite.
+*@
+
+@inherits UmbracoTemplatePage
+@{
+    Layout = "umbLayout.cshtml";
+}
+            	 <div class="row">
+            <div class="col-md-8"> 
+    <div class="uBlogsy_content_body">
+ @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListBlogRollMain", Model, 6000, false, false, new ViewDataDictionary(ViewData) { { "ItemLimit", 10 } })
+    </div>
+
+   </div> <div class="col-md-4">           
+            @* list posts for home - this only works if the home page is a parent, or sibling of uBlogsyLanding *@
+            @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListPostsForHome", Model, 0, false, true, new ViewDataDictionary(ViewData) { { "ItemLimit", 5 } })		
+        </div>
+    </div> 

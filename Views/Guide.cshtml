@@ -1,0 +1,132 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "umbLayout.cshtml";
+	
+	    // If the editor has not explicitly provided the "Page title" property page 
+    // then just show the name of the page otherwise show the provided title
+    var pageTitle = string.IsNullOrWhiteSpace(CurrentPage.Title)
+        ? CurrentPage.Name
+        : CurrentPage.Title; 
+	
+	var node = 1;
+    
+    if(CurrentPage.nodeID != null)
+    {
+        node = CurrentPage.nodeID;
+
+    }
+    
+    var content = Umbraco.Content(node);    
+   
+    var selection = content.Children.Where("Visible").OrderBy("SortOrder");
+}
+<div id="guidepage">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="content content-left">
+                    <!-- Content -->
+                    <article class="is-page-content">
+                        <header>
+                            <h2 class="textpagetitle">@pageTitle</h2>
+                        </header>
+							<h3>@CurrentPage.subHeader</h3>
+                        
+                        <section>
+                            @if (string.IsNullOrWhiteSpace(CurrentPage.Image) == false)
+                            {
+                                <span class=""><img class="img-textpage img-responsive" src="@CurrentPage.Image" alt="" /></span>
+                            }
+
+                            @CurrentPage.BodyText
+                        </section> 
+                        
+                        @{
+    @* Get the property alias we want to filter on from the macro parameter *@
+    var childpages = CurrentPage.Children.Where("Visible").OrderBy("SortOrder");
+}
+<ul class="nav">
+    @foreach (var childpage in childpages)
+    { 
+			
+			        <li>
+            <article class="is-post-summary">
+                <h4><a href="@childpage.Url">@childpage.Name</a></h4>
+            </article>
+        </li>
+    }
+</ul>
+
+                          
+                    </article>
+                    <!-- /Content -->
+                </div>
+            </div>
+<div class="col-md-4">
+    <div class="sidebar">
+    <!-- Sidebar -->
+ @if(CurrentPage.Id != node)
+     {
+ 
+        <h2>In This Guide</h2>
+
+    <ul class="nav">
+    @foreach (var page in selection)
+    { 
+        string strSelectedText = "";
+        if(page.Id == CurrentPage.Id)
+        {
+            strSelectedText = "selected";
+        }
+        <li>
+            <article class="is-post-summary">
+            <h4><a class="@strSelectedText" href="@page.Url">@page.Name</a></h4>               
+            
+            </article>
+        </li>
+   }
+</ul>
+    }
+        @{if(CurrentPage.Parent.Id != node && CurrentPage.Id != node)
+          {
+          
+          
+          
+          var subcontent = Umbraco.Content(CurrentPage.Parent.Id); 
+
+                var subpages = subcontent.Children.Where("Visible").OrderBy("SortOrder");
+
+                if(selection.Any())
+                {
+                    <h2>In This Section</h2>
+                }
+                <ul class="nav">
+                    @foreach (var subpage in subpages)
+                    { 	
+                                string strSelectedSubText = "";
+        if(subpage.Id == CurrentPage.Id)
+        {
+            strSelectedSubText = "selected";
+        }
+                        	
+			            <li>
+                            <article class="is-post-summary">
+                            <h4><a class="@strSelectedSubText" href="@subpage.Url">@subpage.Name</a></h4>
+                            </article>
+                        </li>
+                    }
+                </ul>
+  
+                    }
+          }
+<!-- /Sidebar -->
+                </div>
+            </div>
+        </div>
+    </div>
+	        <div class="row">
+            <div class="col-md-12"><div class="guidefooter">
+			            All content in this guide is available under the <a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/"
+                            title="next">Open Government Licence v2.0</a>, except where otherwise stated.
+				        </div> </div>
+    </div>
+<!-- /Main -->

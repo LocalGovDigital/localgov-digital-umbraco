@@ -1,0 +1,150 @@
+@using System.Configuration
+@using System.Web.Mvc
+@using System.Web.Mvc.Html
+@using Umbraco.Web
+@using uCommentsy.BusinessLogic
+@using uCommentsy.Mvc.Parts.Models.Forms
+
+@inherits Umbraco.Web.Mvc.UmbracoViewPage<ContactFormModel>
+
+@{
+    HtmlHelper.ClientValidationEnabled = true;
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = true;
+    
+    @* It is better to put these scripts in your header *@
+    @RenderScripts()
+    
+    <div id="uCommentsy_form_container">
+        <h4>@(Umbraco.GetDictionaryValue("uCommentsyDicContactFormPostComment"))</h4>
+        @HandleRedirects()
+    </div>
+}
+
+
+@* It is better to put these scripts in your header *@
+@helper RenderScripts()
+    {
+    <link href="~/css/uCommentsy.css" rel="stylesheet" type="text/css" />
+    <script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script>
+    <script src="@Url.Content("http://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("http://ajax.aspnetcdn.com/ajax/mvc/3.0/jquery.validate.unobtrusive.min.js")"></script>
+}
+
+
+
+@helper HandleRedirects()
+    {
+        var action = Request.QueryString["action"];
+        var success = Request.QueryString["success"];
+
+
+        if (!string.IsNullOrEmpty(action) && action == "comment")
+        {
+            if (!string.IsNullOrEmpty(success) && success == "true")
+            {
+            <a name="success">&nbsp;</a>
+            <p>@Umbraco.GetDictionaryValue("uCommentsyDicContactFormThanks")</p>
+            }
+            else if (!string.IsNullOrEmpty(success) && success == "error")
+            {
+            <a name="error">&nbsp;</a>
+            <p>
+                @Umbraco.GetDictionaryValue("uCommentsyDicContactFormError")
+            </p>
+            }
+            else if (!string.IsNullOrEmpty(success) && success == "spam")
+            {
+            <a name="spam">&nbsp;</a>
+            <p>Bad spambot! You're a very bad spambot!</p>
+            }
+        }
+        else if (!string.IsNullOrEmpty(action) && action == "unsubscribe")
+        {
+        @RenderUnsubscribe(success)
+        }
+        else if ((bool)TempData["closed"])
+        {
+        <p>@Umbraco.GetDictionaryValue("uCommentsyDicContactFormCommentsClosed")</p>
+        }
+        else
+        {
+        @RenderForm()
+        }
+}
+
+
+
+
+
+@helper RenderUnsubscribe(string success)
+    {
+        if (!string.IsNullOrEmpty(success) && success == "true")
+        {
+        <a name="unsubscribed">&nbsp;</a>
+        <p>
+        @Umbraco.GetDictionaryValue("uCommentsyDicContactFormUnsubscribed")
+    </p>
+        }
+        else if (!string.IsNullOrEmpty(success) && success == "false")
+        {
+        <a name="unsubscribed">&nbsp;</a>
+        <p> @Umbraco.GetDictionaryValue("uCommentsyDicContactFormUnsubscribedInvalid")</p>
+        }
+        else if (!string.IsNullOrEmpty(success) && success == "error")
+        {
+        <a name="unsubscribed">&nbsp;</a>
+        <p>
+            @Umbraco.GetDictionaryValue("uCommentsyDicContactFormUnsubscribedError")
+        </p>
+        }
+}
+
+
+
+
+@helper RenderForm()
+    {
+    using (Html.BeginUmbracoForm("Post", "uCommentsyContactFormSurface", FormMethod.Post, new { @class = "uCommentsy_comment_form" }))
+    {
+        <div class="uCommentsy_row">
+            @Html.TextBoxFor(x => Model.Name, new Dictionary<string, object> { { "placeholder", Umbraco.GetDictionaryValue("uCommentsyDicContactFormName") } })
+            @Html.ValidationMessageFor(x => Model.Name, "*")
+        </div>
+        <div class="uCommentsy_row">
+            @Html.TextBoxFor(x => Model.Email, new Dictionary<string, object> { { "placeholder", Umbraco.GetDictionaryValue("uCommentsyDicContactFormEmail") } })
+            @Html.ValidationMessageFor(x => Model.Email, "*")
+        </div>
+        <div class="uCommentsy_row">
+            @Html.TextBoxFor(x => Model.Website, new Dictionary<string, object> { { "placeholder", Umbraco.GetDictionaryValue("uCommentsyDicContactFormWebsite") } })
+        </div>
+        <div class="uCommentsy_row uCommentsy_tall">
+            @Html.TextAreaFor(x => Model.Message, new Dictionary<string, object> { { "placeholder", Umbraco.GetDictionaryValue("uCommentsyDicContactFormMessage") } })
+            @Html.ValidationMessageFor(x => Model.Message, "*")
+        </div>
+
+        if (Enumerable.Contains(ConfigReader.Instance.GetTargetDocumentTypeAliases(), Umbraco.Content(UmbracoContext.Current.PageId).DocumentTypeAlias))
+        {
+            <div class="uCommentsy_row " runat="server" >
+                @Html.CheckBoxFor(x => Model.Subscribe)
+                @Html.Label(Umbraco.GetDictionaryValue("uCommentsyDicContactFormSubscribe"))
+                @Html.ValidationMessageFor(x => Model.Subscribe, "*")
+            </div>
+        }
+        <div class="uCommentsy_row">
+            @*recaptcha - if you don't want recaptcha, just remove this, and the public and private key pair from your web.config *@
+            @if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["RecaptchaPublicKey"]) || string.IsNullOrEmpty(ConfigurationManager.AppSettings["RecaptchaPrivateKey"])
+                      || ConfigurationManager.AppSettings["RecaptchaPublicKey"] == "," || ConfigurationManager.AppSettings["RecaptchaPrivateKey"] == ",")
+            {
+                <p>ReCaptcha key error. Get your key here: http://www.google.com/recaptcha </p>
+            }
+            else
+            {
+                @ReCaptcha.GetHtml(theme: "clean")
+            }
+        </div>
+    
+        <div class="uCommentsy_row">
+            <input type="submit" id="uCommentsy_Submit"  name="uCommentsy_Submit" value="@Umbraco.GetDictionaryValue("uCommentsyDicContactFormSubmit")" />
+        </div>
+    }
+}

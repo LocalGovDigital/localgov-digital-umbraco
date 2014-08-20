@@ -1,0 +1,35 @@
+﻿@inherits UmbracoTemplatePage
+
+@if (CurrentPage.HideBanner == false)
+{
+	var link = CurrentPage.BannerLink.ToString();
+			
+			
+			
+			                <div class="content content-left">
+					
+                    <!-- Featured Post -->
+                    <article class="is-post">
+                        <header>
+						<h2 class="major"><span>@Umbraco.Field("bannerHeader")</span></h2>
+                           
+                           
+                            
+                        </header>
+
+                        @if (string.IsNullOrWhiteSpace(CurrentPage.BannerBackgroundImage) == false)
+                        {
+                            <a href="@Umbraco.Content(link).Url" class="image image-full"><img class="img-featuredNewsItem img-responsive" src="@CurrentPage.BannerBackgroundImage" alt="" /></a>
+                        }
+
+                         
+<div class="row">
+	<div class="col-xs-10 col-vs-12"><span class="byline">@Umbraco.Field("bannerSubheader")</span>
+		
+                        
+							</div><br class="display-vs" style="clear:both"/>	<div class="col-xs-2"><a href="@Umbraco.Content(link).Url" class="btn-byline btn btn-lg btn-primary">@Umbraco.Field("bannerLinkText")</a>
+						</div>	</div>	
+                    </article>
+                    <!-- /Featured Post -->
+                </div>
+}

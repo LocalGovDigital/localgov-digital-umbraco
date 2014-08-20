@@ -1,0 +1,40 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "umbLayout.cshtml";
+}
+<!-- Main -->
+<div id="main-wrapper">
+    <div id="content">
+		        <div class="row">
+            <div class="col-lg-12">
+                @{   Html.RenderPartial("umbNewsOverviewWidget"); }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                @{ Html.RenderPartial("umbFeatures"); }
+            </div>
+        </div>
+				        <div class="row">
+            <div class="col-md-6">
+				<h2>LocalGov Digital Tweets</h2>
+                @{ Html.RenderPartial("umbTwitter"); }
+            </div>
+			<div class="col-md-6 feedcontainer">
+				<h2>LocalGov Digital Voice</h2>
+                <div id="feedbox">
+                @Html.Partial("uBlogsy/Widgets/uBlogsyWidgetListBlogRollMain", new ViewDataDictionary(ViewData) { { "ItemLimit", 20 } })
+          </div>
+<a class="letusknowlink" href="~/localgov-digital-voice/tell-us-about-your-blog/">Let us know about your blog</a>
+				
+        </div>
+    </div>
+</div>
+<script>
+    (function($){
+        $(window).load(function(){
+            $("#feedbox").mCustomScrollbar();
+        });
+    })(jQuery);
+</script>
+<!-- /Main -->

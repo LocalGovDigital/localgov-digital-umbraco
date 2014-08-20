@@ -1,0 +1,45 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "umbLayout.cshtml";
+    
+    // If the editor has not explicitly provided the "Page title" property page 
+    // then just show the name of the page otherwise show the provided title
+    var pageTitle = string.IsNullOrWhiteSpace(CurrentPage.Title)
+        ? CurrentPage.Name
+        : CurrentPage.Title;
+}
+<div id="news">        
+<div class="row">
+            <div class="col-lg-8">
+                <div class="content content-left">
+                    <!-- Content -->
+                    <article class="is-page-content">
+                        <header>
+                            <h2>@pageTitle</h2>
+                        </header>
+                        <section>
+                            @if (string.IsNullOrWhiteSpace(CurrentPage.Image) == false)
+                            {
+                                <span><img class="img-featuredNewsItem img-responsive" src="@CurrentPage.Image" alt="" /></span>
+                            }
+
+                            @CurrentPage.BodyText
+                        </section>                           
+                    </article>
+                    <!-- /Content -->
+                  </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <!-- Sidebar -->
+                    @{ Html.RenderPartial("umbLatestNewsWidget"); }
+                    <!-- /Sidebar -->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                @{ Html.RenderPartial("umbFeatures"); }
+            </div>
+        </div> </div>
+<!-- /Main -->

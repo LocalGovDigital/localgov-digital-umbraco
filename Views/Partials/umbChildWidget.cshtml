@@ -1,0 +1,38 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+
+@*
+    Macro parameter to be set on the macro
+    Alias:propertyAlias     Name:Property Alias    Type:Textbox
+*@   
+
+@{
+    @* Get the property alias we want to filter on from the macro parameter *@
+    var selection = CurrentPage.Children.Where("Visible").OrderBy("SortOrder");
+	
+	if(selection.Any() != true)
+	   {
+		  var parent = CurrentPage.Parent;
+		  selection = parent.Children.Where("Visible").OrderBy("SortOrder");
+	   }
+}
+@if(selection.Any())
+{
+<h2>In This Section</h2>
+}
+<ul>
+    @foreach (var page in selection)
+    { 
+       
+        string strSelected = "";
+		if(CurrentPage.Id == page.Id)
+			{
+				strSelected = "selected";
+			}
+			        <li>
+            <article class="is-post-summary">
+                <h4><a class="@strSelected" href="@page.Url">@page.Name</a></h4>
+            </article>
+        </li>
+    }
+ 
+</ul>

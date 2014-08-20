@@ -1,0 +1,62 @@
+@*
+    Base Blog layout. Make this inherit from your base template
+*@
+
+@inherits UmbracoTemplatePage
+@{
+    Layout = "umbLayout.cshtml";
+}
+    <div id="uBlogsy"> 
+        <div id="uBlogsy_main"> 
+            	 <div class="row">
+            <div class="col-md-8">             
+            <section id="uBlogsy_left_col">
+                @RenderSection("uBlogsyLeftCol")
+            </section>
+                </div> <div class="col-md-4"> 
+            <aside id="uBlogsy_right_col">
+                @*search*@
+                @Html.Partial("uBlogsy/Widgets/uBlogsyWidgetSearch")
+
+                @*rss link*@
+                @Html.Partial("uBlogsy/Widgets/uBlogsyWidgetShowRSSLink")
+
+                @*list of authors*@ @*@Umbraco.RenderMacro("uBlogsyListAuthors")*@
+                @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListAuthors", Model, 0, false, false, new ViewDataDictionary(ViewData) { { "GravatarSize", 20 } })
+
+                @*list of labels*@
+                @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListLabels", Model, 0)
+
+                @*the awesome tag cloud*@
+                @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListTags", Model, 0, false, false, new ViewDataDictionary(ViewData) { { "ShowCount", true } })
+                  
+                @*list of latest posts*@
+                @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListPosts", Model, 0, false, false, new ViewDataDictionary(ViewData) { { "ItemLimit", 5 } })
+
+                @*list of latest comments - install uCommentsy if you want to use comments *@
+                @try{
+                    @Html.CachedPartial("uCommentsy/Widgets/uCommentsyWidgetListComments", Model, 0, false, false, new ViewDataDictionary(ViewData) { { "ItemLimit", 5 } })
+                }catch (Exception){}
+                        
+                @*archive*@
+                @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListPostArchive", Model, 6000, false, false, new ViewDataDictionary(ViewData) { { "AltLayout", false } })
+
+                @*list blog roll *@
+                <h2>LocalGov Digital Voice</h2>
+                @Html.CachedPartial("uBlogsy/Widgets/uBlogsyWidgetListBlogRollMain", Model, 0, false, false, new ViewDataDictionary(ViewData) { { "ItemLimit", 20 } })
+            </aside>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                @{ Html.RenderPartial("umbFeatures"); }
+            </div>
+        </div>
+    </div>   </div>   </div>
+<script>
+    (function($){
+        $(window).load(function(){
+            $(".uBlogsy_blogroll_container").mCustomScrollbar();
+        });
+    })(jQuery);
+</script>
+

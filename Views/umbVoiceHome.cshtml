@@ -1,0 +1,65 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = "umbLayout.cshtml";
+
+        // If the editor has not explicitly provided the "Page title" property page 
+    // then just show the name of the page otherwise show the provided title
+    var pageTitle = string.IsNullOrWhiteSpace(CurrentPage.Title)
+        ? CurrentPage.Name
+        : CurrentPage.Title;   
+}
+<!-- Main -->
+<div id="main-wrapper">
+    <div id="content">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="content content-left">
+                    <!-- Content -->
+                    <article class="is-page-content">
+                        <header>
+                            <h2 class="textpagetitle">@pageTitle</h2>
+                        </header>
+                        <section>
+                            @if (string.IsNullOrWhiteSpace(CurrentPage.Image) == false)
+                            {
+                                <span class=""><img class="img-textpage img-responsive" src="@CurrentPage.Image" alt="" /></span>
+                            }
+						<h3 class="textpageintro">@Umbraco.Field("subheader")</h3>
+
+                            @CurrentPage.BodyText
+                        </section>                           
+                    </article>
+                    <!-- /Content -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="sidebar">
+                    <!-- Sidebar -->
+                    @{ Html.RenderPartial("umbChildWidget"); }
+                    <!-- /Sidebar -->
+                </div>
+            </div>
+        </div>
+		        <div class="row">
+            <div class="col-md-6">
+				<h2>LocalGov Digital Tweets</h2>
+                @{ Html.RenderPartial("umbTwitter"); }
+            </div>
+			<div class="col-md-6 feedcontainer">
+				<h2>LocalGov Digital Voice</h2>
+                <div id="feedbox">
+                @Html.Partial("uBlogsy/Widgets/uBlogsyWidgetListBlogRollMain", new ViewDataDictionary(ViewData) { { "ItemLimit", 20 } })
+          </div>
+<a class="letusknowlink" href="~/localgov-digital-makers/let-us-know-about-your-blog/">Let us know about your blog</a>
+				
+        </div>
+    </div>
+</div>
+<script>
+    (function($){
+        $(window).load(function(){
+            $("#feedbox").mCustomScrollbar();
+        });
+    })(jQuery);
+</script>
+<!-- /Main -->
